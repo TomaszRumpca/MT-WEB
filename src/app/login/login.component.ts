@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {first} from 'rxjs/internal/operators';
@@ -16,12 +16,12 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authenticationService: AuthenticationService,
-    private alertService: AlertService) {}
+  constructor(private formBuilder: FormBuilder,
+              private route: ActivatedRoute,
+              private router: Router,
+              private authenticationService: AuthenticationService,
+              private alertService: AlertService) {
+  }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -29,15 +29,14 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required]
     });
 
-    // reset login status
-    this.authenticationService.logout();
-
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
+  get f() {
+    return this.loginForm.controls;
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -52,10 +51,10 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-            if (data['name']) {
-              localStorage.setItem('currentUser', JSON.stringify(data));
-              this.router.navigate([this.returnUrl]);
-            }
+          if (data['name']) {
+            localStorage.setItem('currentUser', JSON.stringify(data));
+            this.router.navigate([this.returnUrl]);
+          }
         },
         error => {
           this.alertService.error(error);
