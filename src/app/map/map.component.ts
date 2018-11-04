@@ -2,6 +2,9 @@ import {Component, Input, ViewChild, NgZone, OnInit} from '@angular/core';
 import {MapsAPILoader, AgmMap} from '@agm/core';
 import {GoogleMapsAPIWrapper} from '@agm/core/services';
 import {HttpClient} from '@angular/common/http';
+import {SeaportsTableItem} from '../seaports-table/seaports-table-datasource';
+import {FormControl, Validators} from '@angular/forms';
+import {ResolverService} from '../resolver.service';
 
 declare var google: any;
 
@@ -97,24 +100,50 @@ export class MapComponent implements OnInit {
   ];
 
   @ViewChild(AgmMap) map: AgmMap;
+  originControl = new FormControl('', [Validators.required]);
+  destinationControl = new FormControl('', [Validators.required]);
+  datePickerControl = new FormControl(new Date(), [Validators.required]);
 
   constructor(public mapsApiLoader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
-              private http: HttpClient) {
-    this.mapsApiLoader = mapsApiLoader;
-    this.zone = zone;
-    this.wrapper = wrapper;
+              private http: HttpClient,
+              private resolverService: ResolverService) {
     this.mapsApiLoader.load().then(() => {
       this.geocoder = new google.maps.Geocoder();
     });
 
   }
 
+  seaportOptions: SeaportsTableItem[] = [
+    {id: 1, name: 'Port of Wladyslawowo', waterway: 'balticsea', country: 'PL', city: 'Władysławowo', latitude: 54.79, longitude: 18.40},
+    {id: 2, name: 'Nørresand(Norresand) ', waterway: 'balticsea', country: 'DK', city: 'Havne', latitude: 55.21, longitude: 14.97},
+    {id: 3, name: 'Port of Wolgast', waterway: 'balticsea', country: 'DE', city: 'Wolgast', latitude: 54.05, longitude: 13.78},
+    {id: 4, name: 'Port of Ronehamn', waterway: 'balticsea', country: 'SW', city: 'Ronehamn', latitude: 57.17, longitude: 18.47},
+    {id: 5, name: 'Port of Lubeck-travemunde', waterway: 'balticsea', country: 'DE', city: 'Lubeck', latitude: 53.97, longitude: 10.88}
+  ];
+
 
   ngOnInit() {
     this.location.marker.draggable = true;
 
+    // this.seaports.connect().subscribe(data => {
+    //   console.log('retrieved seaports options');
+    //   this.seaportOptions = data;
+    // }, error => {
+    //   this.seaportOptions = null;
+    // });
+
   }
 
+  onSubmit() {
+    console.log('submitted: ', this.originControl, this.destinationControl, this.datePickerControl);
+
+    this.resolverService.resolve(this.originControl.value, this.destinationControl.value, this.datePickerControl.value).subscribe(data => {
+      console.log('solution', data);
+    }, error2 => {
+      console.log('failed to find solution', error2);
+    });
+
+  }
 }

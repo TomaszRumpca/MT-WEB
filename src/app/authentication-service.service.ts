@@ -15,9 +15,10 @@ export class AuthenticationService {
 
   login(username: string, password: string) {
 
+    const basicAuth = btoa(username + ':' + password);
+    localStorage.setItem('basicAuth', basicAuth);
     const headers = new HttpHeaders({
-      authorization:
-      'Basic ' + btoa(username + ':' + password)
+      authorization: 'Basic ' + basicAuth
     });
 
     return this.http.get('http://localhost:8080/user', {headers: headers});
@@ -27,4 +28,6 @@ export class AuthenticationService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
   }
+
+
 }

@@ -14,19 +14,23 @@ import {
   MatListModule,
   MatTableModule,
   MatPaginatorModule,
-  MatSortModule
+  MatSortModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatNativeDateModule,
+  MatDatepickerModule,
+  MatInputModule
 } from '@angular/material';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import {LoginComponent} from './login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RegisterComponent} from './register/register.component';
 import {SeaportsTableComponent} from './seaports-table/seaports-table.component';
 import {MainNavComponent} from './main-nav/main-nav.component';
-import {SeaportService} from './seaport.service';
-import { MapComponent } from './map/map.component';
-
+import {MapComponent} from './map/map.component';
+import {AuthInterceptor} from './login/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -48,18 +52,29 @@ import { MapComponent } from './map/map.component';
     MatIconModule,
     MatListModule,
     FormsModule,
+    MatDatepickerModule,
     ReactiveFormsModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatNativeDateModule,
+    MatInputModule,
     AgmCoreModule.forRoot({
-      // apiKey: 'AIzaSyBkqeT1Cw4I_IO8hMX8F-i0OJAcTaVQbok'
       apiKey: 'AIzaSyDCKYgsbrTnuVLhkdloGxHeaAnjvvAF2Rw'
     }),
   ],
-  providers: [GoogleMapsAPIWrapper],
+  providers: [
+    GoogleMapsAPIWrapper,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
