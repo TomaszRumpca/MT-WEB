@@ -1,55 +1,55 @@
-<agm-map #map [latitude]="lat" [longitude]="lng">
+<div class="map-view">
+  <div class="container row form">
+    <ngForm #inputForm>
+      <mat-form-field class="map-controls-margin">
+        <mat-select placeholder="Origin" [formControl]="originControl" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let seaport of seaports" [value]="seaport">
+            {{seaport.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="originControl.hasError('required')">Please choose an origin port</mat-error>
+        <mat-hint>{{originControl.value?.city}}</mat-hint>
+      </mat-form-field>
+      <mat-form-field class="map-controls-margin">
+        <mat-select placeholder="Destination" [formControl]="destinationControl" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let seaport of seaports" [value]="seaport">
+            {{seaport.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="destinationControl.hasError('required')">Please choose a destination port</mat-error>
+        <mat-hint>{{destinationControl.value?.city}}</mat-hint>
+      </mat-form-field>
+      <mat-form-field class="map-controls-margin">
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="datePickerControl" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button mat-button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
+    </ngForm>
+  </div>
 
-  <!--<agm-marker [latitude]="50.017491" [longitude]="15.196958"></agm-marker>-->
-  <!--<agm-marker [latitude]="49.198487" [longitude]="13.684232"></agm-marker>-->
+  <agm-map class="row map" #map [latitude]="lat" [longitude]="lng" [zoom]="5">
 
-  <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
-    <ng-container *ngFor="let i of paths">
-      <agm-polyline-point [latitude]="i.lat" [longitude]="i.lng">
-      </agm-polyline-point>
+    <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
+      <ng-container *ngFor="let i of paths">
+        <agm-polyline-point [latitude]="i.lat" [longitude]="i.lng">
+        </agm-polyline-point>
+      </ng-container>
+    </agm-polyline>
+
+    <agm-polyline  [strokeColor]="'green'" [strokeWeight]="1" >
+      <ng-container *ngFor="let i of solution">
+        <agm-polyline-point [latitude]="i.latitude" [longitude]="i.longitude">
+        </agm-polyline-point>
+      </ng-container>
+    </agm-polyline>
+
+    <ng-container *ngFor="let i of seaports">
+      <agm-marker [latitude]="i.latitude" [longitude]="i.longitude" [title]="i.name"></agm-marker>
     </ng-container>
-  </agm-polyline>
 
-  <agm-polyline  [strokeColor]="'green'" [strokeWeight]="1" >
-    <ng-container *ngFor="let i of solution">
-      <agm-polyline-point [latitude]="i.latitude" [longitude]="i.longitude">
-      </agm-polyline-point>
-    </ng-container>
-  </agm-polyline>
-
-  <ng-container *ngFor="let i of solution">
-    <agm-marker [latitude]="i.latitude" [longitude]="i.longitude"></agm-marker>
-  </ng-container>
-
-</agm-map>
-
-<div class="container">
-<ngForm #inputForm>
-  <mat-form-field class="map-controls-margin">
-    <mat-select placeholder="Origin" [formControl]="originControl" required>
-      <mat-option>--</mat-option>
-      <mat-option *ngFor="let seaport of seaportOptions" [value]="seaport">
-        {{seaport.name}}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="originControl.hasError('required')">Please choose an origin port</mat-error>
-    <mat-hint>{{originControl.value?.city}}</mat-hint>
-  </mat-form-field>
-  <mat-form-field class="map-controls-margin">
-    <mat-select placeholder="Destination" [formControl]="destinationControl" required>
-      <mat-option>--</mat-option>
-      <mat-option *ngFor="let seaport of seaportOptions" [value]="seaport">
-        {{seaport.name}}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="destinationControl.hasError('required')">Please choose a destination port</mat-error>
-    <mat-hint>{{destinationControl.value?.city}}</mat-hint>
-  </mat-form-field>
-  <mat-form-field class="map-controls-margin">
-    <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="datePickerControl" required>
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-  <button mat-button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
-</ngForm>
+  </agm-map>
 </div>
+

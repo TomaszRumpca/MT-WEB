@@ -2,7 +2,7 @@ import {Coordinates} from './coordinates';
 
 export class AlgorithmInput {
 
-  constructor(origin: Coordinates, destination: Coordinates, tripDate) {
+  constructor(private origin: Coordinates, private destination: Coordinates, private plannedDepartureDateTime) {
 
   }
 

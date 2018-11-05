@@ -19,7 +19,7 @@ import {
   MatSelectModule,
   MatNativeDateModule,
   MatDatepickerModule,
-  MatInputModule
+  MatInputModule, MatProgressSpinnerModule
 } from '@angular/material';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
@@ -63,6 +63,7 @@ import {AuthInterceptor} from './login/auth.interceptor';
     MatSelectModule,
     MatNativeDateModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDCKYgsbrTnuVLhkdloGxHeaAnjvvAF2Rw'
     }),

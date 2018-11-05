@@ -15,7 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: SeaportsTableComponent,
+        component: MapComponent,
         canActivate: [AuthGuardService]
       },
       {

@@ -17,13 +17,11 @@ export class ResolverService {
       new Coordinates(destination.latitude, destination.longitude),
       tripDate);
 
-    const data = localStorage.getItem('currentUser');
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    console.log('logged in user', data);
+    console.log('request body', input);
     return this.http.post('http://localhost:8080/api/solve', input, {
       headers: headers
     });

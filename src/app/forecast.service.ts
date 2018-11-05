@@ -42,6 +42,7 @@ export class ForecastService {
   }
 
   getMetaData(): Observable<Object> {
+    console.log('requesting forecast metadata...');
     return this.http.get('http://localhost:8080/api/forecast/meta');
   }
 
