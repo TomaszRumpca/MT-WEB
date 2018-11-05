@@ -1,5 +1,7 @@
 <agm-map #map [latitude]="lat" [longitude]="lng">
-  <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+
+  <!--<agm-marker [latitude]="50.017491" [longitude]="15.196958"></agm-marker>-->
+  <!--<agm-marker [latitude]="49.198487" [longitude]="13.684232"></agm-marker>-->
 
   <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
     <ng-container *ngFor="let i of paths">
@@ -8,12 +10,16 @@
     </ng-container>
   </agm-polyline>
 
-  <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
-    <ng-container *ngFor="let i of paths">
-      <agm-polyline-point [latitude]="i.lat" [longitude]="i.lng">
+  <agm-polyline  [strokeColor]="'green'" [strokeWeight]="1" >
+    <ng-container *ngFor="let i of solution">
+      <agm-polyline-point [latitude]="i.latitude" [longitude]="i.longitude">
       </agm-polyline-point>
     </ng-container>
   </agm-polyline>
+
+  <ng-container *ngFor="let i of solution">
+    <agm-marker [latitude]="i.latitude" [longitude]="i.longitude"></agm-marker>
+  </ng-container>
 
 </agm-map>
 

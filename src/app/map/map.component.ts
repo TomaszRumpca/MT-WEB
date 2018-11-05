@@ -1,10 +1,11 @@
-import {Component, Input, ViewChild, NgZone, OnInit} from '@angular/core';
-import {MapsAPILoader, AgmMap} from '@agm/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {AgmMap, MapsAPILoader} from '@agm/core';
 import {GoogleMapsAPIWrapper} from '@agm/core/services';
 import {HttpClient} from '@angular/common/http';
 import {SeaportsTableItem} from '../seaports-table/seaports-table-datasource';
 import {FormControl, Validators} from '@angular/forms';
 import {ResolverService} from '../resolver.service';
+import {ForecastService} from '../forecast.service';
 
 declare var google: any;
 
@@ -35,69 +36,12 @@ interface Location {
 })
 export class MapComponent implements OnInit {
 
-  lat = 51.678418;
-  lng = 7.809007;
-
-  circleRadius = 5000; // km
+  lat;
+  lng;
+  forecastMetaData;
+  paths;
+  solution;
   geocoder: any;
-  public location: Location = {
-    lat: 51.678418,
-    lng: 7.809007,
-    marker: {
-      lat: 51.678418,
-      lng: 7.809007,
-      draggable: true
-    },
-    zoom: 5
-  };
-
-  forecastMetaData = {
-    forecastStartDateTime: {
-      month: 'MAY',
-      year: 2016,
-      dayOfMonth: 1,
-      dayOfWeek: 'SUNDAY',
-      dayOfYear: 122,
-      hour: 0,
-      minute: 0,
-      nano: 0,
-      second: 0,
-      monthValue: 5,
-      chronology: {
-        id: 'ISO',
-        calendarType: 'iso8601'
-      }
-    },
-    forecastDuration: 49,
-    latDataCount: 3,
-    lonDataCount: 4,
-    leftBottomLatCoordinate: 48.802824,
-    latStep: 0.5378444945891919,
-    leftBottomLonCoordinate: 13.236774,
-    lonStep: 0.5378444945891919
-  };
-
-  paths = [{
-    lat: this.forecastMetaData.leftBottomLatCoordinate,
-    lng: this.forecastMetaData.leftBottomLonCoordinate
-  },
-    {
-      lat: this.forecastMetaData.leftBottomLatCoordinate,
-      lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
-    },
-    {
-      lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
-      lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
-    },
-    {
-      lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
-      lng: this.forecastMetaData.leftBottomLonCoordinate
-    },
-    {
-      lat: this.forecastMetaData.leftBottomLatCoordinate,
-      lng: this.forecastMetaData.leftBottomLonCoordinate
-    }
-  ];
 
   @ViewChild(AgmMap) map: AgmMap;
   originControl = new FormControl('', [Validators.required]);
@@ -108,7 +52,8 @@ export class MapComponent implements OnInit {
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
               private http: HttpClient,
-              private resolverService: ResolverService) {
+              private resolverService: ResolverService,
+              private forecastService: ForecastService) {
     this.mapsApiLoader.load().then(() => {
       this.geocoder = new google.maps.Geocoder();
     });
@@ -116,6 +61,8 @@ export class MapComponent implements OnInit {
   }
 
   seaportOptions: SeaportsTableItem[] = [
+    {id: 1, name: 'Fake1', waterway: 'balticsea', country: 'PL', city: 'Władysławowo', latitude: 49.198487, longitude: 13.684232},
+    {id: 1, name: 'Fake2', waterway: 'balticsea', country: 'PL', city: 'Władysławowo', latitude: 50.017491, longitude: 15.196958},
     {id: 1, name: 'Port of Wladyslawowo', waterway: 'balticsea', country: 'PL', city: 'Władysławowo', latitude: 54.79, longitude: 18.40},
     {id: 2, name: 'Nørresand(Norresand) ', waterway: 'balticsea', country: 'DK', city: 'Havne', latitude: 55.21, longitude: 14.97},
     {id: 3, name: 'Port of Wolgast', waterway: 'balticsea', country: 'DE', city: 'Wolgast', latitude: 54.05, longitude: 13.78},
@@ -125,7 +72,16 @@ export class MapComponent implements OnInit {
 
 
   ngOnInit() {
-    this.location.marker.draggable = true;
+    this.forecastService.getMetaData().subscribe(data => {
+      this.forecastMetaData = data;
+      this.lat = this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount / 2);
+      this.lng = this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount / 2);
+      this.paths = this.calculatePaths();
+      console.log('forecast', this.forecastMetaData);
+    }, error2 => {
+      console.error('failed to fetch forecast metadata');
+      this.forecastMetaData = undefined;
+    });
 
     // this.seaports.connect().subscribe(data => {
     //   console.log('retrieved seaports options');
@@ -136,14 +92,37 @@ export class MapComponent implements OnInit {
 
   }
 
-  onSubmit() {
-    console.log('submitted: ', this.originControl, this.destinationControl, this.datePickerControl);
 
+  calculatePaths() {
+    return [{
+      lat: this.forecastMetaData.leftBottomLatCoordinate,
+      lng: this.forecastMetaData.leftBottomLonCoordinate
+    },
+      {
+        lat: this.forecastMetaData.leftBottomLatCoordinate,
+        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
+      },
+      {
+        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
+        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
+      },
+      {
+        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
+        lng: this.forecastMetaData.leftBottomLonCoordinate
+      },
+      {
+        lat: this.forecastMetaData.leftBottomLatCoordinate,
+        lng: this.forecastMetaData.leftBottomLonCoordinate
+      }
+    ];
+  }
+
+  onSubmit() {
     this.resolverService.resolve(this.originControl.value, this.destinationControl.value, this.datePickerControl.value).subscribe(data => {
-      console.log('solution', data);
+      this.solution = data['optimalPaths'][0];
+      console.log('solution', this.solution);
     }, error2 => {
       console.log('failed to find solution', error2);
     });
-
   }
 }
