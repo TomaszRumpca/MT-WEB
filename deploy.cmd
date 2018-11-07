@@ -25,10 +25,12 @@ SET ARTIFACTS=%~dp0%..\artifacts
 IF NOT DEFINED DEPLOYMENT_SOURCE (
   SET DEPLOYMENT_SOURCE=%~dp0%.
 )
+echo DEPLOYMENT SOURCE %DEPLOYMENT_SOURCE%
 
 IF NOT DEFINED DEPLOYMENT_TARGET (
   SET DEPLOYMENT_TARGET=%ARTIFACTS%\wwwroot
 )
+echo DEPLOYMENT TARGET %DEPLOYMENT_TARGET%
 
 IF NOT DEFINED NEXT_MANIFEST_PATH (
   SET NEXT_MANIFEST_PATH=%ARTIFACTS%\manifest
@@ -106,8 +108,9 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 )
 
 :: 4. Building the Angular App
-IF EXIST "%DEPLOYMENT_TARGET%.angular.json" (
+IF EXIST "%DEPLOYMENT_TARGET%\angular.json" (
   pushd "%DEPLOYMENT_TARGET%"
+  echo building angular app ...
   call :ExecuteCmd node_modules\.bin\ng build --progress false --prod
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
