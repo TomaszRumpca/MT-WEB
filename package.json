@@ -2,13 +2,13 @@
   "name": "mt-web",
   "version": "0.0.0",
   "scripts": {
-    "ng": "node_modules/.bin/ng",
-    "start": "node_modules/.bin/ng serve",
-    "start:prod": "node_modules/.bin/ng build --prod && lite-server --baseDir dist/MT-WEB",
-    "build": "ng build",
-    "test": "node_modules/.bin/ng test",
-    "lint": "node_modules/.bin/ng lint",
-    "e2e": "node_modules/.bin/ng e2e"
+    "ng": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng",
+    "start": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng serve",
+    "start:prod": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng build --prod && lite-server --baseDir dist/MT-WEB",
+    "build": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng build",
+    "test": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng test",
+    "lint": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng lint",
+    "e2e": "%DEPLOYMENT_SOURCE%/node_modules/.bin/ng e2e"
   },
   "private": true,
   "dependencies": {
