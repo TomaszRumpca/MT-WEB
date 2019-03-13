@@ -9,6 +9,7 @@ import {SeaportService} from '../seaport.service';
   styleUrls: ['./seaports-table.component.scss'],
 })
 export class SeaportsTableComponent implements OnInit {
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 

@@ -30,26 +30,47 @@
     </ngForm>
   </div>
 
-  <agm-map class="row map" #map [latitude]="lat" [longitude]="lng" [zoom]="5">
+  <div class="box">
+    <agm-map class="row map" #map [latitude]="lat" [longitude]="lng" [zoom]="5">
 
-    <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
-      <ng-container *ngFor="let i of paths">
-        <agm-polyline-point [latitude]="i.lat" [longitude]="i.lng">
-        </agm-polyline-point>
+      <agm-polyline  [strokeColor]="'red'" [strokeWeight]="0.5" >
+        <ng-container *ngFor="let i of paths">
+          <agm-polyline-point [latitude]="i.lat" [longitude]="i.lng">
+          </agm-polyline-point>
+        </ng-container>
+      </agm-polyline>
+
+      <agm-polyline  [strokeColor]="'green'" [strokeWeight]="1" >
+        <ng-container *ngFor="let i of solution">
+          <agm-polyline-point [latitude]="i.latitude" [longitude]="i.longitude">
+          </agm-polyline-point>
+        </ng-container>
+      </agm-polyline>
+
+      <ng-container *ngFor="let i of seaports">
+        <agm-marker [latitude]="i.latitude" [longitude]="i.longitude" [title]="i.name"></agm-marker>
       </ng-container>
-    </agm-polyline>
 
-    <agm-polyline  [strokeColor]="'green'" [strokeWeight]="1" >
-      <ng-container *ngFor="let i of solution">
-        <agm-polyline-point [latitude]="i.latitude" [longitude]="i.longitude">
-        </agm-polyline-point>
-      </ng-container>
-    </agm-polyline>
+    </agm-map>
+    <div class="solution-table">
 
-    <ng-container *ngFor="let i of seaports">
-      <agm-marker [latitude]="i.latitude" [longitude]="i.longitude" [title]="i.name"></agm-marker>
-    </ng-container>
+    </div>
+    <!--<table mat-table [dataSource]="solution" matSort aria-label="Elements">-->
+      <!--<ng-container matColumnDef="latitude">-->
+        <!--<th mat-header-cell *matHeaderCellDef mat-sort-header>Latitude</th>-->
+        <!--<td mat-cell *matCellDef="let row">{{row.latitude}}</td>-->
+      <!--</ng-container>-->
+<!---->
+      <!--<ng-container matColumnDef="longitude">-->
+        <!--<th mat-header-cell *matHeaderCellDef mat-sort-header>Longitude</th>-->
+        <!--<td mat-cell *matCellDef="let row">{{row.longitude}}</td>-->
+      <!--</ng-container>-->
 
-  </agm-map>
+      <!--<tr mat-header-row *matHeaderRowDef="displayedSolutionColumns"></tr>-->
+      <!--<tr mat-row *matRowDef="let row of solution; columns: displayedSolutionColumns;"></tr>-->
+    <!--</table>-->
+
+  </div>
+
 </div>
 

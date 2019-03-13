@@ -31,6 +31,8 @@ export class MapComponent implements OnInit {
   geocoder: any;
   seaports;
 
+  displayedSolutionColumns = ['latitude', 'longitude'];
+
   @ViewChild(AgmMap) map: AgmMap;
 
   originControl = new FormControl('', [Validators.required]);

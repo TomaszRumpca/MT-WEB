@@ -55,6 +55,7 @@ export class SeaportsTableDataSource extends DataSource<SeaportsTableItem> {
     // return merge(...dataMutations).pipe(map(() => {
     //   return this.getPagedData();
     // }));
+    console.log('looking up seaports data');
     return this.seaportService.getAll();
   }
 

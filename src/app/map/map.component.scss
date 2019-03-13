@@ -38,27 +38,15 @@ button {
   margin: 20px;
 }
 
-
 .map-view {
   height: 100%;
   margin: 0
 }
 
 .box {
-  display: flex;
-  flex-flow: column;
   height: 100%;
 }
 
-.box .row.form {
-  flex: 0 1 auto;
-  /* The above is shorthand for:
-  flex-grow: 0,
-  flex-shrink: 1,
-  flex-basis: auto
-  */
-}
-//
 .sebm-google-map-container {
   height: 400px;
 }
