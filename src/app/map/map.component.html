@@ -26,6 +26,7 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+      <mat-checkbox class="map-controls-margin" (change)="drawForecastRange()" [formControl]="cachedControl">Cached</mat-checkbox>
       <button mat-button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
     </ngForm>
   </div>

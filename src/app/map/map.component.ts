@@ -38,6 +38,7 @@ export class MapComponent implements OnInit {
   originControl = new FormControl('', [Validators.required]);
   destinationControl = new FormControl('', [Validators.required]);
   datePickerControl = new FormControl(new Date(), [Validators.required]);
+  cachedControl = new FormControl(true);
 
   tripDetailsForm: FormGroup;
 
@@ -64,10 +65,21 @@ export class MapComponent implements OnInit {
     this.tripDetailsForm = this.formBuilder.group({
       originControl: this.originControl,
       destinationControl: this.destinationControl,
-      datePickerControl: this.datePickerControl
+      datePickerControl: this.datePickerControl,
+      cachedControl: this.cachedControl
     });
 
-    this.forecastService.getMetaData().subscribe(data => {
+    this.drawForecastRange();
+
+    this.seaportService.getAll().subscribe(response => {
+      this.seaports = response;
+    }, error2 => {
+      console.log('failed to load seaports', error2);
+    });
+  }
+
+  private drawForecastRange() {
+    this.forecastService.getMetaData(this.f.cachedControl.value, this.f.datePickerControl.value).subscribe(data => {
       this.forecastMetaData = data;
       this.lat = this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount / 2);
       this.lng = this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount / 2);
@@ -76,12 +88,6 @@ export class MapComponent implements OnInit {
     }, error2 => {
       console.error('failed to fetch forecast metadata');
       this.forecastMetaData = undefined;
-    });
-
-    this.seaportService.getAll().subscribe(response => {
-      this.seaports = response;
-    }, error2 => {
-      console.log('failed to load seaports', error2);
     });
   }
 
@@ -113,7 +119,8 @@ export class MapComponent implements OnInit {
     if (this.tripDetailsForm.valid) {
       this.resolverService.resolve(this.f.originControl.value,
         this.f.destinationControl.value,
-        this.f.datePickerControl.value)
+        this.f.datePickerControl.value,
+        this.f.cachedControl.value)
         .subscribe(data => {
           this.solution = data['optimalPaths'][0];
           console.log('solution', this.solution);
