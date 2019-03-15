@@ -33,6 +33,7 @@ import {SeaportsTableComponent} from './seaports-table/seaports-table.component'
 import {MainNavComponent} from './main-nav/main-nav.component';
 import {MapComponent} from './map/map.component';
 import {AuthInterceptor} from './login/auth.interceptor';
+import { ForecastsComponent } from './forecasts/forecasts.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {AuthInterceptor} from './login/auth.interceptor';
     RegisterComponent,
     SeaportsTableComponent,
     MainNavComponent,
-    MapComponent
+    MapComponent,
+    ForecastsComponent
   ],
   imports: [
     BrowserModule,

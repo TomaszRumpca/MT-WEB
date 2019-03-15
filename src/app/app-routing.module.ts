@@ -5,6 +5,7 @@ import {SeaportsTableComponent} from './seaports-table/seaports-table.component'
 import {MapComponent} from './map/map.component';
 import {AuthGuardService} from './login/auth-guard.service';
 import {MainNavComponent} from './main-nav/main-nav.component';
+import {ForecastsComponent} from './forecasts/forecasts.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -26,6 +27,11 @@ const routes: Routes = [
       {
         path: 'map',
         component: MapComponent,
+        canActivate: [AuthGuardService]
+      },
+      {
+        path: 'forecasts',
+        component: ForecastsComponent,
         canActivate: [AuthGuardService]
       }
     ]
