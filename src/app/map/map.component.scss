@@ -48,11 +48,13 @@ button {
 }
 
 .sebm-google-map-container {
-  height: 400px;
+  height: 500px;
 }
 
 .box .row.sebm-google-map-container {
   flex: 1 1 auto;
 }
 
-
+.errorMessage {
+  color: red;
+}

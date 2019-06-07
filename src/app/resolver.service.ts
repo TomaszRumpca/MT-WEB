@@ -12,10 +12,12 @@ export class ResolverService {
   constructor(private http: HttpClient) {
   }
 
-  resolve(origin: SeaportsTableItem, destination: SeaportsTableItem, tripDate, cached: boolean) {
+  resolve(origin: SeaportsTableItem, destination: SeaportsTableItem, tripDate: Date, cached: boolean) {
+
+    console.log("Requesting route for date:", tripDate.toISOString());
     const input = new AlgorithmInput(new Coordinates(origin.latitude, origin.longitude),
       new Coordinates(destination.latitude, destination.longitude),
-      tripDate);
+      tripDate.toISOString());
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'

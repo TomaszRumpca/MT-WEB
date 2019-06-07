@@ -54,7 +54,7 @@
 
     </agm-map>
     <div class="solution-table">
-
+      <p class="errorMessage" *ngIf="error != undefined">Error: {{error}}</p>
     </div>
     <!--<table mat-table [dataSource]="solution" matSort aria-label="Elements">-->
       <!--<ng-container matColumnDef="latitude">-->

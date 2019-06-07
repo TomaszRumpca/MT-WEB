@@ -30,6 +30,7 @@ export class MapComponent implements OnInit {
   solution;
   geocoder: any;
   seaports;
+  error;
 
   displayedSolutionColumns = ['latitude', 'longitude'];
 
@@ -37,7 +38,7 @@ export class MapComponent implements OnInit {
 
   originControl = new FormControl('', [Validators.required]);
   destinationControl = new FormControl('', [Validators.required]);
-  datePickerControl = new FormControl(new Date(), [Validators.required]);
+  datePickerControl ;
   cachedControl = new FormControl(true);
 
   tripDetailsForm: FormGroup;
@@ -62,6 +63,9 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+    let date = new Date();
+    date.setHours(0,0,0,0);
+    this.datePickerControl = new FormControl(date, [Validators.required]);
     this.tripDetailsForm = this.formBuilder.group({
       originControl: this.originControl,
       destinationControl: this.destinationControl,
@@ -116,6 +120,7 @@ export class MapComponent implements OnInit {
   }
 
   onSubmit() {
+    this.error = undefined;
     if (this.tripDetailsForm.valid) {
       this.resolverService.resolve(this.f.originControl.value,
         this.f.destinationControl.value,
@@ -125,9 +130,13 @@ export class MapComponent implements OnInit {
           this.solution = data['optimalPaths'][0];
           console.log('solution', this.solution);
         }, error2 => {
-          console.log('failed to find solution', error2);
+          this.handleError(error2.error);
         });
     }
+  }
+
+  handleError(error) {
+    this.error = error.reason;
   }
 }
 
