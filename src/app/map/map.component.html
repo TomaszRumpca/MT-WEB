@@ -27,6 +27,7 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       <mat-checkbox class="map-controls-margin" (change)="drawForecastRange()" [formControl]="cachedControl">Cached</mat-checkbox>
+      <mat-checkbox class="map-controls-margin" (change)="drawForecastData()" [formControl]="forecastDataLayerControl">forecast</mat-checkbox>
       <button mat-button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
     </ngForm>
   </div>
@@ -51,6 +52,21 @@
       <ng-container *ngFor="let i of seaports">
         <agm-marker [latitude]="i.latitude" [longitude]="i.longitude" [title]="i.name"></agm-marker>
       </ng-container>
+
+      <agm-marker *ngFor="let loc of windSpots" [label]="loc.wind.u.toString().concat(',', loc.wind.v.toString())"
+                  [latitude]="loc.coordinates.latitude"
+                  [longitude]="loc.coordinates.longitude"
+                  [iconUrl]="
+                  {
+                    url: './assets/icons/Dot-512.png',
+                    scaledSize: {
+                        width: 3,
+                        height: 3
+                    }
+                  }"
+      >
+
+      </agm-marker>
 
     </agm-map>
     <div class="solution-table">

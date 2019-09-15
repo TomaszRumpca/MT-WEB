@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {WindSpot} from "./_models/wind.spot";
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,10 @@ export class ForecastService {
     const headers = new HttpHeaders().set('Cache-Control', 'max-age=86400');
     const reqParams = new HttpParams().set('cachedData', String(cachedData));
     return this.http.get('http://localhost:8080/forecast/dates', { params : reqParams, headers: headers});
+  }
+
+  getForecastData(cachedData: boolean, date: Date) : Observable<any>{
+    const reqParams = new HttpParams().set('cachedData', String(cachedData)).set('year', String(date.getFullYear()));
+    return this.http.get('http://localhost:8080/forecast/data', { params : reqParams});
   }
 }

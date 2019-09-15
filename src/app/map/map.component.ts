@@ -6,6 +6,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ResolverService} from '../resolver.service';
 import {ForecastService} from '../forecast.service';
 import {SeaportService} from '../seaport.service';
+import {WindSpot} from "../_models/wind.spot";
 
 declare var google: any;
 
@@ -38,10 +39,12 @@ export class MapComponent implements OnInit {
 
   originControl = new FormControl('', [Validators.required]);
   destinationControl = new FormControl('', [Validators.required]);
-  datePickerControl ;
+  datePickerControl;
   cachedControl = new FormControl(true);
+  forecastDataLayerControl = new FormControl(true);
 
   tripDetailsForm: FormGroup;
+  windSpots: WindSpot[] = [];
 
   constructor(public mapsApiLoader: MapsAPILoader,
               private zone: NgZone,
@@ -64,13 +67,15 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     let date = new Date();
-    date.setHours(0,0,0,0);
+    date.setHours(0, 0, 0, 0);
+    date.setFullYear(2019);
     this.datePickerControl = new FormControl(date, [Validators.required]);
     this.tripDetailsForm = this.formBuilder.group({
       originControl: this.originControl,
       destinationControl: this.destinationControl,
       datePickerControl: this.datePickerControl,
-      cachedControl: this.cachedControl
+      cachedControl: this.cachedControl,
+      forecastDataLayerControl: this.forecastDataLayerControl
     });
 
     this.drawForecastRange();
@@ -102,14 +107,14 @@ export class MapComponent implements OnInit {
     },
       {
         lat: this.forecastMetaData.leftBottomLatCoordinate,
-        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
+        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * (this.forecastMetaData.lonDataCount -1))
       },
       {
-        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
-        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * this.forecastMetaData.lonDataCount)
+        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * (this.forecastMetaData.latDataCount -1)),
+        lng: this.forecastMetaData.leftBottomLonCoordinate + (this.forecastMetaData.lonStep * (this.forecastMetaData.lonDataCount -1))
       },
       {
-        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * this.forecastMetaData.latDataCount),
+        lat: this.forecastMetaData.leftBottomLatCoordinate + (this.forecastMetaData.latStep * (this.forecastMetaData.latDataCount -1)),
         lng: this.forecastMetaData.leftBottomLonCoordinate
       },
       {
@@ -138,6 +143,22 @@ export class MapComponent implements OnInit {
   handleError(error) {
     this.error = error.reason;
   }
+
+  drawForecastData() {
+    // console.info("")
+    if (this.f.forecastDataLayerControl.value) {
+      this.forecastService.getForecastData(this.f.cachedControl.value, this.f.datePickerControl.value)
+        .subscribe(data => {
+          this.windSpots = data;
+        }, error2 => {
+          console.error('failed to fetch forecast data');
+          this.windSpots = [];
+        });
+    } else {
+      this.windSpots = [];
+    }
+  }
+
 }
 
 interface Location {
